@@ -20,10 +20,10 @@ jobs:
           target: x86_64-unknown-linux-gnu
           os: ubuntu-latest
           rust: stable
-        - build: macos
-          target: x86_64-apple-darwin
-          os: macos-latest
-          rust: stable
+        # - build: macos
+        #   target: x86_64-apple-darwin
+        #   os: macos-latest
+        #   rust: stable
         - build: windows
           target: x86_64-pc-windows-msvc
           os: windows-latest
