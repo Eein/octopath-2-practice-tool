@@ -11,6 +11,8 @@ jobs:
   release:
     name: Release
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
     strategy:
       matrix:
         include:
@@ -39,6 +41,15 @@ jobs:
       - name: Install Target
         run: rustup target add ${{ matrix.target }}
 
+      - name: Retrieve Mix Dependencies Cache
+        uses: actions/cache@v3.0.10
+        id: ${{ mix.target }}-cache
+        with:
+          path: target
+          key: ${{ matrix.build }}-${{ matrix.target }}-${{ matrix.os}}-cache-${{ hashFiles('Cargo.lock') }}
+          restore-keys: |
+            ${{ matrix.build }}-${{ matrix.target }}-${{ matrix.os}}-cache-
+
       - name: Build
         run: cargo build --target ${{ matrix.target }} --release
         env:
@@ -53,4 +64,4 @@ jobs:
           tag_name: release-${{ github.sha }}
           release_name: Release ${{ github.sha }}
           files: |
-            ./target/${{ matrix.target }}/release/octopath-2-practice*
+            ./target/${{ matrix.target }}/release/octopath-2-practice-${{ matrix.target }}.*
