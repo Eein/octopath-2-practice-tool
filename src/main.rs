@@ -77,7 +77,10 @@ impl<T: Pod> Watcher<T> {
 }
 
 fn main() {
-    let native_options = eframe::NativeOptions::default();
+    let native_options = eframe::NativeOptions {
+        initial_window_size: Some(egui::Vec2{x: 300.0, y: 300.0}),
+        ..eframe::NativeOptions::default()
+    };
     eframe::run_native(
         "Octopath 2 Practice Tool",
         native_options,
@@ -89,6 +92,16 @@ fn main() {
 impl eframe::App for State {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         ctx.request_repaint();
+
+        if let Some(process) = &self.process {
+            match !self.process_list.is_open(sysinfo::Pid::from(process.pid as usize)) {
+                true => {
+                    self.process = None;
+                    return
+                },
+                _ => ()
+            }
+        };
 
         if let Some(process) = &self.process {
             let game_state = self.game_state.update(&process, self.module).unwrap();
@@ -151,8 +164,9 @@ impl eframe::App for State {
             }
 
             egui::CentralPanel::default().show(ctx, |ui| {
-                ui.heading("Connecting To Octopath 2...");
+                ui.label("Game is not running...");
             });
         }
+
     }
 }

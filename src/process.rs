@@ -34,7 +34,7 @@ pub struct Error;
 
 pub struct Process {
     handle: ProcessHandle,
-    pid: Pid,
+    pub pid: Pid,
     modules: Vec<MapRange>,
     last_check: Instant,
 }
