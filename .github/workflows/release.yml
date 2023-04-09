@@ -1,0 +1,56 @@
+name: Rust
+
+on:
+  pull_request:
+  push:
+    branches:
+      - 'master'
+    tags:
+      - '*'
+jobs:
+  release:
+    name: Release
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+        - build: linux
+          target: x86_64-unknown-linux-gnu
+          os: ubuntu-latest
+          rust: stable
+        - build: macos
+          target: x86_64-apple-darwin
+          os: macos-latest
+          rust: stable
+        - build: windows
+          target: x86_64-pc-windows-msvc
+          os: windows-latest
+          rust: stable
+
+    steps:
+      - name: Checkout Commit
+        uses: actions/checkout@v3
+
+      - name: Install Rust
+        uses: hecrj/setup-rust-action@v1
+        with:
+          rust-version: 'stable'
+
+      - name: Install Target
+        run: rustup target add ${{ matrix.target }}
+
+      - name: Build
+        run: cargo build --target ${{ matrix.target }} --release
+        env:
+          TARGET: ${{ matrix.target }}
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+          tag_name: release-${{ github.sha }}
+          release_name: Release ${{ github.sha }}
+          files: |
+            ./target/${{ matrix.target }}/release/octopath-2-practice*
