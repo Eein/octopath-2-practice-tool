@@ -64,4 +64,5 @@ jobs:
           tag_name: release-${{ github.sha }}
           release_name: Release ${{ github.sha }}
           files: |
-            ./target/${{ matrix.target }}/release/octopath-2-practice-${{ matrix.target }}.*
+            ./target/${{ matrix.target }}/release/octopath-2-practice-tool
+            ./target/${{ matrix.target }}/release/octopath-2-practice-tool.exe
