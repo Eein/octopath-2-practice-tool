@@ -41,9 +41,9 @@ jobs:
       - name: Install Target
         run: rustup target add ${{ matrix.target }}
 
-      - name: Retrieve Mix Dependencies Cache
+      - name: Retrieve Cargo Build Cache
         uses: actions/cache@v3.0.10
-        id: ${{ matrix.target }}-cache
+        id: cargo-cache
         with:
           path: target
           key: ${{ matrix.build }}-${{ matrix.target }}-${{ matrix.os}}-cache-${{ hashFiles('Cargo.lock') }}
